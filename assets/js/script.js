@@ -157,15 +157,15 @@ function processData() {
 
     audioSource.src = musicData[currentMusic].streamUrl;
 
-    audioSource.addEventListener("loadeddata", updateDuration);
+    // audioSource.addEventListener("loadeddata", updateDuration);
     playMusic();
   }
 
   addEventOnElements(playlistItems, "click", changePlayerInfo);
 
   /** update player duration */
-  const playerDuration = document.querySelector("[data-duration]");
-  const playerSeekRange = document.querySelector("[data-seek]");
+  // const playerDuration = document.querySelector("[data-duration]");
+  // const playerSeekRange = document.querySelector("[data-seek]");
 
   /** pass seconds and get timcode formate */
   const getTimecode = function (duration) {
@@ -175,12 +175,12 @@ function processData() {
     return timecode;
   }
 
-  const updateDuration = function () {
-    playerSeekRange.max = Math.ceil(audioSource.duration);
-    playerDuration.textContent = getTimecode(Number(playerSeekRange.max));
-  }
+  // const updateDuration = function () {
+  //   playerSeekRange.max = Math.ceil(audioSource.duration);
+  //   playerDuration.textContent = getTimecode(Number(playerSeekRange.max));
+  // }
 
-  audioSource.addEventListener("loadeddata", updateDuration);
+  // audioSource.addEventListener("loadeddata", updateDuration);
 
   /**
    * PLAY MUSIC
@@ -196,7 +196,7 @@ function processData() {
     if (audioSource.paused) {
       audioSource.play();
       playBtn.classList.add("active");
-      playInterval = setInterval(updateRunningTime, 500);
+      // playInterval = setInterval(updateRunningTime, 500);
     } else {
       audioSource.pause();
       playBtn.classList.remove("active");
@@ -207,15 +207,15 @@ function processData() {
   playBtn.addEventListener("click", playMusic);
 
   /** update running time while playing music */
-  const playerRunningTime = document.querySelector("[data-running-time");
+  // const playerRunningTime = document.querySelector("[data-running-time");
 
-  const updateRunningTime = function () {
-    playerSeekRange.value = audioSource.currentTime;
-    playerRunningTime.textContent = getTimecode(audioSource.currentTime);
+  // const updateRunningTime = function () {
+  //   playerSeekRange.value = audioSource.currentTime;
+  //   playerRunningTime.textContent = getTimecode(audioSource.currentTime);
 
-    updateRangeFill();
-    isMusicEnd();
-  }
+  //   updateRangeFill();
+  //   isMusicEnd();
+  // }
 
   /**
    * RANGE FILL WIDTH
@@ -223,17 +223,17 @@ function processData() {
    * change 'rangeFill' width, while changing range value
    */
 
-  const ranges = document.querySelectorAll("[data-range]");
-  const rangeFill = document.querySelector("[data-range-fill]");
+  // const ranges = document.querySelectorAll("[data-range]");
+  // const rangeFill = document.querySelector("[data-range-fill]");
 
-  const updateRangeFill = function () {
-    let element = this || ranges[0];
+  // const updateRangeFill = function () {
+  //   let element = this || ranges[0];
 
-    const rangeValue = (element.value / element.max) * 100;
-    element.nextElementSibling.style.width = `${rangeValue}%`;
-  }
+  //   const rangeValue = (element.value / element.max) * 100;
+  //   element.nextElementSibling.style.width = `${rangeValue}%`;
+  // }
 
-  addEventOnElements(ranges, "input", updateRangeFill);
+  // addEventOnElements(ranges, "input", updateRangeFill);
 
   /**
    * SEEK MUSIC
@@ -241,26 +241,26 @@ function processData() {
    * seek music while changing player seek range
    */
 
-  const seek = function () {
-    audioSource.currentTime = playerSeekRange.value;
-    playerRunningTime.textContent = getTimecode(playerSeekRange.value);
-  }
+  // const seek = function () {
+  //   audioSource.currentTime = playerSeekRange.value;
+  //   playerRunningTime.textContent = getTimecode(playerSeekRange.value);
+  // }
 
-  playerSeekRange.addEventListener("input", seek);
+  // playerSeekRange.addEventListener("input", seek);
 
   /**
    * END MUSIC
    */
 
-  const isMusicEnd = function () {
-    if (audioSource.ended) {
-      playBtn.classList.remove("active");
-      audioSource.currentTime = 0;
-      playerSeekRange.value = audioSource.currentTime;
-      playerRunningTime.textContent = getTimecode(audioSource.currentTime);
-      updateRangeFill();
-    }
-  }
+  // const isMusicEnd = function () {
+  //   if (audioSource.ended) {
+  //     playBtn.classList.remove("active");
+  //     audioSource.currentTime = 0;
+  //     playerSeekRange.value = audioSource.currentTime;
+  //     playerRunningTime.textContent = getTimecode(audioSource.currentTime);
+  //     updateRangeFill();
+  //   }
+  // }
 
   /**
    * SKIP TO NEXT MUSIC
@@ -348,39 +348,39 @@ function processData() {
    * increase or decrease music volume when change the volume range
    */
 
-  const playerVolumeRange = document.querySelector("[data-volume]");
-  const playerVolumeBtn = document.querySelector("[data-volume-btn]");
+  // const playerVolumeRange = document.querySelector("[data-volume]");
+  // const playerVolumeBtn = document.querySelector("[data-volume-btn]");
 
-  const changeVolume = function () {
-    audioSource.volume = playerVolumeRange.value;
-    audioSource.muted = false;
+  // const changeVolume = function () {
+  //   audioSource.volume = playerVolumeRange.value;
+  //   audioSource.muted = false;
 
-    if (audioSource.volume <= 0.1) {
-      playerVolumeBtn.children[0].textContent = "volume_mute";
-    } else if (audioSource.volume <= 0.5) {
-      playerVolumeBtn.children[0].textContent = "volume_down";
-    } else {
-      playerVolumeBtn.children[0].textContent = "volume_up";
-    }
-  }
+  //   if (audioSource.volume <= 0.1) {
+  //     playerVolumeBtn.children[0].textContent = "volume_mute";
+  //   } else if (audioSource.volume <= 0.5) {
+  //     playerVolumeBtn.children[0].textContent = "volume_down";
+  //   } else {
+  //     playerVolumeBtn.children[0].textContent = "volume_up";
+  //   }
+  // }
 
-  playerVolumeRange.addEventListener("input", changeVolume);
+  // playerVolumeRange.addEventListener("input", changeVolume);
 
 
   /**
    * MUTE MUSIC
    */
 
-  const muteVolume = function () {
-    if (!audioSource.muted) {
-      audioSource.muted = true;
-      playerVolumeBtn.children[0].textContent = "volume_off";
-    } else {
-      changeVolume();
-    }
-  }
+  // const muteVolume = function () {
+  //   if (!audioSource.muted) {
+  //     audioSource.muted = true;
+  //     playerVolumeBtn.children[0].textContent = "volume_off";
+  //   } else {
+  //     changeVolume();
+  //   }
+  // }
 
-  playerVolumeBtn.addEventListener("click", muteVolume);
+  // playerVolumeBtn.addEventListener("click", muteVolume);
 
   // Get data from selected station
   async function getDataSelected(data) {

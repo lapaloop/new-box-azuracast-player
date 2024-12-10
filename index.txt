@@ -1,6 +1,6 @@
 Music Player
 
-A web music player html template made by codewithsadee
+A web music player html template made by PeWe79
 
 
 

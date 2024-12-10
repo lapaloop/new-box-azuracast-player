@@ -1,8 +1,8 @@
 <div align="center">
   
-  ![GitHub repo size](https://github.com/PeWe79/azuracast-radio-player)
-  ![GitHub stars](https://github.com/PeWe79/azuracast-radio-player/stargazers)
-  ![GitHub forks](https://github.com/PeWe79/azuracast-radio-player/forks)
+  ![GitHub repo size](https://github.com/PeWe79/azuracast-radio-player?style=social)
+  ![GitHub stars](https://github.com/PeWe79/azuracast-radio-player/stargazers?style=social)
+  ![GitHub forks](https://github.com/PeWe79/azuracast-radio-player/forks?style=social)
 
   <br />
   <br />

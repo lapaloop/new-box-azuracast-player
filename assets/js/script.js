@@ -193,6 +193,7 @@ function processData() {
   let playInterval;
 
   const playMusic = function () {
+    audioSource.volume = 1;
     if (audioSource.paused) {
       audioSource.play();
       playBtn.classList.add("active");

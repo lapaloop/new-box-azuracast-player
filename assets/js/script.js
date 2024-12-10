@@ -389,13 +389,13 @@ function processData() {
       const T = musicData[currentMusic];
       const artist = reslt.now_playing.song.artist || T.artist;
       const title = reslt.now_playing.song.title || T.title;
-      const album = reslt.now_playing.song.genre || T.album;
+      const album = reslt.now_playing.song.album || T.album;
       const art = reslt.now_playing.song.art || T.posterUrl;
       const cover = art;
 
       document.getElementById("title").innerHTML = title;
       document.title = artist + " | " + title;
-      document.getElementById("album").innerHTML = album;
+      document.getElementById("album").innerHTML = album || "N/A";
       document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
       getMetaData(reslt.now_playing.song);

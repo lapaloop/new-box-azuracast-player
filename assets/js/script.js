@@ -141,7 +141,7 @@ function processData() {
   const playerBanner = document.querySelector("[data-player-banner]");
   const playerTitle = document.querySelector("[data-title]");
   const playerAlbum = document.querySelector("[data-album]");
-  const playerYear = document.querySelector("[data-year]");
+  // const playerYear = document.querySelector("[data-year]");
   const playerArtist = document.querySelector("[data-artist]");
 
   const audioSource = new Audio(musicData[currentMusic].streamUrl);
@@ -152,7 +152,7 @@ function processData() {
     document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
     playerTitle.textContent = musicData[currentMusic].title;
     playerAlbum.textContent = musicData[currentMusic].album;
-    playerYear.textContent = musicData[currentMusic].year;
+    // playerYear.textContent = musicData[currentMusic].year;
     playerArtist.textContent = musicData[currentMusic].artist;
 
     audioSource.src = musicData[currentMusic].streamUrl;

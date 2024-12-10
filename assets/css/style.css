@@ -310,8 +310,8 @@ body:hover::-webkit-scrollbar-thumb {
 	margin-block: 8px 4px;
 }
 
-.label-wrapper span:first-child::after {
-	content: "|";
+.label-wrapper span:first-child::before {
+	content: "From: ";
 	display: inline-block;
 	margin-inline: 4px;
 }

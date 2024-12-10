@@ -1,12 +1,4 @@
 <div align="center">
-  
-  ![GitHub repo size](https://github.com/PeWe79/azuracast-radio-player?style=social)
-  ![GitHub stars](https://github.com/PeWe79/azuracast-radio-player/stargazers?style=social)
-  ![GitHub forks](https://github.com/PeWe79/azuracast-radio-player/forks?style=social)
-
-  <br />
-  <br />
-
   <h2 align="center">Web Radio Player</h2>
 
   A fully responsive web radio player using vanilla javascript, <br />Responsive for all devices, build using html, css, and javascript.

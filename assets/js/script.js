@@ -7,7 +7,7 @@
 const musicData = [];
 
 /** Azuracast server */
-const apiUrl = "https://s1.cloudmu.id";
+// const apiUrl = "https://s1.cloudmu.id";
 
 /**
  * Fetch API data from Azuracast server
@@ -147,9 +147,9 @@ function processData() {
   const audioSource = new Audio(musicData[currentMusic].streamUrl);
 
   const changePlayerInfo = function () {
-    playerBanner.src = musicData[currentMusic].posterUrl;
+    // playerBanner.src = musicData[currentMusic].posterUrl;
     playerBanner.setAttribute("alt", `${musicData[currentMusic].title} Album Poster`);
-    document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
+    // document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
     playerTitle.textContent = musicData[currentMusic].title;
     playerAlbum.textContent = musicData[currentMusic].album;
     // playerYear.textContent = musicData[currentMusic].year;
@@ -274,6 +274,72 @@ function processData() {
 
   playerRepeatBtn.addEventListener("click", repeat);
 
+  const getCoverArt = function (a, t) {
+    var urlCoverArt = musicData[currentMusic].posterUrl;
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        const data = JSON.parse(this.responseText);
+        const artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : urlCoverArt;
+
+        urlCoverArt = (artworkUrl100 != urlCoverArt) ? artworkUrl100.replace('100x100bb', '512x512bb') : urlCoverArt;
+        var urlCoverArt96 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '96x96bb') : urlCoverArt;
+        var urlCoverArt128 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '128x128bb') : urlCoverArt;
+        var urlCoverArt192 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '192x192bb') : urlCoverArt;
+        var urlCoverArt256 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '256x256bb') : urlCoverArt;
+        var urlCoverArt384 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '384x384bb') : urlCoverArt;
+
+        playerBanner.src = urlCoverArt;
+        document.getElementById("artwork").src = urlCoverArt;
+        document.body.style.backgroundImage = `url(${urlCoverArt})`;
+        playerBanner.setAttribute("alt", `${t} Album Poster`);
+
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: t,
+            artist: a,
+            artwork: [
+              {
+                src: urlCoverArt96,
+                sizes: '96x96',
+                type: 'image/png'
+              },
+              {
+                src: urlCoverArt128,
+                sizes: '128x128',
+                type: 'image/png'
+              },
+              {
+                src: urlCoverArt192,
+                sizes: '192x192',
+                type: 'image/png'
+              },
+              {
+                src: urlCoverArt256,
+                sizes: '256x256',
+                type: 'image/png'
+              },
+              {
+                src: urlCoverArt384,
+                sizes: '384x384',
+                type: 'image/png'
+              },
+              {
+                src: urlCoverArt,
+                sizes: '512x512',
+                type: 'image/png'
+              }
+            ]
+          });
+        }
+      }
+    }
+    xhttp.open('GET', 'https://itunes.apple.com/search?term=' + a + " " + t + '&media=music&limit=1', true);
+    xhttp.crossOrigin = "anonymous";
+    xhttp.send();
+  }
+
   // Get data from selected station
   async function getDataSelected(data) {
     try {
@@ -282,63 +348,18 @@ function processData() {
       const artist = reslt.now_playing.song.artist || T.artist;
       const title = reslt.now_playing.song.title || T.title;
       const album = reslt.now_playing.song.album || T.album;
-      const art = reslt.now_playing.song.art || T.posterUrl;
-      const cover = art;
+      // const art = reslt.now_playing.song.art || T.posterUrl;
+      // const cover = art;
 
       document.getElementById("title").innerHTML = title;
       document.title = artist + " | " + title;
       document.getElementById("album").innerHTML = album || "N/A";
-      document.getElementById("artwork").src = cover;
+      // document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
-      getMetaData(reslt.now_playing.song);
+      // getMetaData(reslt.now_playing.song);
+      getCoverArt(artist, title);
     } catch (e) {
       console.error("Error fetching data:", e);
-    }
-  }
-
-  function getMetaData(callback) {
-    if ("mediaSession" in navigator) {
-      const {
-        title: title = callback.title,
-        artist: artist = callback.artist,
-        art: art = callback.posterUrl,
-      } = callback,
-        img96 = {
-          src: art,
-          sizes: "96x96",
-          type: "image/png",
-        };
-      const img128 = {
-        src: art,
-        sizes: "128x128",
-        type: "image/png",
-      };
-      const img192 = {
-        src: art,
-        sizes: "192x192",
-        type: "image/png",
-      };
-      const img256 = {
-        src: art,
-        sizes: "256x256",
-        type: "image/png",
-      };
-      const img384 = {
-        src: art,
-        sizes: "384x384",
-        type: "image/png",
-      };
-      const img512 = {
-        src: art,
-        sizes: "512x512",
-        type: "image/png",
-      };
-      const mData = {
-        title: title,
-        artist: artist,
-        artwork: [img96, img128, img192, img256, img384, img512],
-      };
-      navigator.mediaSession.metadata = new MediaMetadata(mData);
     }
   }
 

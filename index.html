@@ -108,7 +108,7 @@
               </button>
 
               <button class="btn-icon toggle" data-shuffle>
-                <span class="material-symbols-rounded">shuffle</span>
+                <span class="material-symbols-rounded">history</span>
               </button>
             </div>
           </div>
@@ -125,6 +125,15 @@
   </main>
 
   <!-- custom js link -->
+  <script>
+    const settings = {
+      title: "Radio Player",
+      defaultartwork: "./assets/images/poster.jpg",
+      nowplayingAPI: "https:\/\/s1.cloudmu.id",
+    };
+    const FallbackName = settings.title;
+    const apiUrl = settings.nowplayingAPI;
+  </script>
   <script src="./assets/js/script.js"></script>
 </body>
 

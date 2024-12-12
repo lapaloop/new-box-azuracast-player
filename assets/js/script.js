@@ -6,6 +6,11 @@
 
 const musicData = [];
 
+/**
+ * History song data
+ */
+let mscHist = [];
+
 /** Azuracast server */
 // const apiUrl = "https://s1.cloudmu.id";
 
@@ -202,12 +207,7 @@ function processData() {
 
   const skipNext = function () {
     lastPlayedMusic = currentMusic;
-
-    if (isShuffled) {
-      shuffleMusic();
-    } else {
-      currentMusic >= musicData.length - 1 ? currentMusic = 0 : currentMusic++;
-    }
+    currentMusic >= musicData.length - 1 ? currentMusic = 0 : currentMusic++;
 
     changePlayerInfo();
     changePlaylistItem();
@@ -223,12 +223,7 @@ function processData() {
 
   const skipPrev = function () {
     lastPlayedMusic = currentMusic;
-
-    if (isShuffled) {
-      shuffleMusic();
-    } else {
-      currentMusic <= 0 ? currentMusic = musicData.length - 1 : currentMusic--;
-    }
+    currentMusic <= 0 ? currentMusic = musicData.length - 1 : currentMusic--;
 
     changePlayerInfo();
     changePlaylistItem();
@@ -241,38 +236,115 @@ function processData() {
    */
 
   /** get random number for shuffle */
-  const getRandomMusic = () => Math.floor(Math.random() * musicData.length);
+  // const getRandomMusic = () => Math.floor(Math.random() * musicData.length);
 
-  const shuffleMusic = () => currentMusic = getRandomMusic();
+  // const shuffleMusic = () => currentMusic = getRandomMusic();
 
-  const playerShuffleBtn = document.querySelector("[data-shuffle]");
-  let isShuffled = false;
+  // const playerShuffleBtn = document.querySelector("[data-shuffle]");
+  // let isShuffled = false;
 
-  const shuffle = function () {
-    playerShuffleBtn.classList.toggle("active");
+  // const shuffle = function () {
+  //   playerShuffleBtn.classList.toggle("active");
 
-    isShuffled = isShuffled ? false : true;
-  }
+  //   isShuffled = isShuffled ? false : true;
+  // }
 
-  playerShuffleBtn.addEventListener("click", shuffle);
+  // playerShuffleBtn.addEventListener("click", shuffle);
 
   /**
    * REPEAT MUSIC
    */
 
-  const playerRepeatBtn = document.querySelector("[data-repeat]");
+  // const playerRepeatBtn = document.querySelector("[data-repeat]");
 
-  const repeat = function () {
-    if (!audioSource.loop) {
-      audioSource.loop = true;
-      this.classList.add("active");
-    } else {
-      audioSource.loop = false;
-      this.classList.remove("active");
-    }
+  // const repeat = function () {
+  //   if (!audioSource.loop) {
+  //     audioSource.loop = true;
+  //     this.classList.add("active");
+  //   } else {
+  //     audioSource.loop = false;
+  //     this.classList.remove("active");
+  //   }
+  // }
+
+  // playerRepeatBtn.addEventListener("click", repeat);
+
+  // const songHistListEle = document.getElementById("song-history-list");
+  const songHistListEle = document.querySelector("[song-history-list]");
+
+  const songListArt = function (d) {
+    songHistListEle.innerHTML = "";
+
+    Array.isArray(d) && d.length > 0 ? d.forEach((b) => {
+      if (!b.song.title || !b.song.artist) return;
+      const liEle = document.createElement("li");
+      const frDate = b.played_at;
+      var histCoverArt = b.song.art;
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+          var data = JSON.parse(this.responseText);
+          var artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : histCoverArt;
+
+          histCoverArt = (artworkUrl100 != histCoverArt) ? artworkUrl100.replace('100x100bb', '192x192bb') : histCoverArt;
+
+          liEle.className = "py-2 flex items-center";
+          liEle.innerHTML = `
+					${histCoverArt
+              ? `<img class="rounded-lg object-cover" src="${histCoverArt}" width="100" alt="${b.title} artwork">`
+              : ""
+            }
+						<div class="ml-3 flex-grow">
+							<p class="text-2xl font-bold text-white text-left">${b.song.title
+            }</p>
+							<p class="text-medium text-gray-900 text-left">By: ${b.song.artist
+            }</p>
+							<p class="text-medium text-gray-900 text-left">From: ${b.song.album || "N/A"
+            }</p>
+							<p class="text-xs text-gray-900 mt-1 text-left">Played at: ${formatData(frDate)
+            }</p>
+						</div>`,
+            songHistListEle.appendChild(liEle);
+        }
+      }
+      xhttp.open('GET', 'https://itunes.apple.com/search?term=' + b.song.artist + ' - ' + b.song.title + '&media=music&limit=1', true);
+      xhttp.crossOrigin = "anonymous";
+      xhttp.send();
+    })
+      : songHistListEle.innerHTML =
+      '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>';
   }
 
-  playerRepeatBtn.addEventListener("click", repeat);
+  const formatData = function (numeric) {
+    const date = new Date(numeric * 1000);
+    date.toLocaleString();
+    date.toDateString();
+    date.toLocaleTimeString();
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    const formattedDate = date.toLocaleTimeString("en-us", options);
+    return formattedDate;
+  }
+
+  const histBtnEle = document.getElementById("HistoryModalBtn");
+  const histBtn = function (d) {
+    Array.isArray(d) && d.length > 0
+      ? histBtnEle.style.display = "block"
+      : histBtnEle.style.display = "none";
+  }
+
+  document.getElementById("HistoryModalBtn").addEventListener("click", () => {
+    getDataSelected(musicData[currentMusic].api),
+      songListArt(),
+      document.getElementById("historyModal").classList.remove("hidden");
+  });
+
+  document.getElementById("closeHistoryModal").addEventListener("click", () => {
+    document.getElementById("historyModal").classList.add("hidden");
+  });
 
   const getCoverArt = function (a, t) {
     var urlCoverArt = musicData[currentMusic].posterUrl;
@@ -352,21 +424,26 @@ function processData() {
       // const cover = art;
 
       document.getElementById("title").innerHTML = title;
-      document.title = artist + " | " + title;
+      document.title = artist + " - " + title;
       document.getElementById("album").innerHTML = album || "N/A";
       // document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
       // getMetaData(reslt.now_playing.song);
       getCoverArt(artist, title);
+
+      mscHist = reslt.song_history || [];
+      songListArt(mscHist);
+      histBtn(mscHist);
+
     } catch (e) {
       console.error("Error fetching data:", e);
     }
   }
 
-  function getData() {
-    setInterval(() => {
+  // function getData() {
+  //   setInterval(() => {
       getDataSelected(musicData[currentMusic].api);
-    }, 3000);
-  }
-  getData();
+  //   }, 3000);
+  // }
+  // getData();
 }

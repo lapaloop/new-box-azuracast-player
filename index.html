@@ -20,8 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
 
   <!-- material icon font -->
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,-25" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,-25" />
 
   <!-- custom css link -->
   <link rel="stylesheet" href="./assets/css/style.css" />
@@ -48,8 +47,7 @@
       <div class="player">
         <div class="container">
           <figure class="music-banner">
-            <img id="artwork" src="./assets/images/poster.jpg" width="800" height="800" alt="Album Art"
-              class="img-cover" data-player-banner />
+            <img id="artwork" src="./assets/images/poster.jpg" width="800" height="800" alt="Album Art" class="img-cover" data-player-banner />
           </figure>
 
           <div class="music-content">
@@ -107,7 +105,7 @@
                 <span class="material-symbols-rounded">skip_next</span>
               </button>
 
-              <button class="btn-icon toggle" data-shuffle>
+              <button id="HistoryModalBtn" class="btn-icon toggle" data-history>
                 <span class="material-symbols-rounded">history</span>
               </button>
             </div>
@@ -123,6 +121,35 @@
       <div class="overlay" data-playlist-toggler data-overlay></div>
     </article>
   </main>
+
+  <div id="historyModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div class="absolute inset-0 bg-black opacity-70"></div>
+      </div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div
+        class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full"
+        role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 relative" id="historyModalContent">
+          <button type="button" id="closeHistoryModal"
+            class="absolute top-3 right-3 text-gray-400 hover:text-gray-500 focus:outline-none">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-center">
+            <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline"></h3>
+            <div class="mt-4">
+              <span class="text-4xl font-bold text-white">Recent Song</span>
+              <ul class="divide-y divide-gray-200" song-history-list></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- custom js link -->
   <script>

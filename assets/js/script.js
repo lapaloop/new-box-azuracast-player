@@ -270,51 +270,36 @@ function processData() {
   // playerRepeatBtn.addEventListener("click", repeat);
 
   // const songHistListEle = document.getElementById("song-history-list");
-  const songHistListEle = document.querySelector("[song-history-list]");
+  // const songHistListEle = document.querySelector("[song-history-list]");
 
   const songListArt = function (d) {
+    const songHistListEle = document.querySelector("[song-history-list]");
     songHistListEle.innerHTML = "";
 
-    Array.isArray(d) && d.length > 0 ? d.forEach((b) => {
+    Array.isArray(d) && d.length > 0 ? d.forEach(b => {
       if (!b.song.title || !b.song.artist) return;
-      const liEle = document.createElement("li");
       const frDate = b.played_at;
-      var histCoverArt = b.song.art;
-
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-          var data = JSON.parse(this.responseText);
-          var artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : histCoverArt;
-
-          histCoverArt = (artworkUrl100 != histCoverArt) ? artworkUrl100.replace('100x100bb', '192x192bb') : histCoverArt;
-
-          liEle.className = "py-2 flex items-center";
-          liEle.innerHTML = `
-					${histCoverArt
-              ? `<img class="rounded-lg object-cover" src="${histCoverArt}" width="100" alt="${b.title} artwork">`
-              : ""
-            }
-						<div class="ml-3 flex-grow">
-							<p class="text-2xl font-bold text-white text-left">${b.song.title
-            }</p>
-							<p class="text-medium text-gray-900 text-left">By: ${b.song.artist
-            }</p>
-							<p class="text-medium text-gray-900 text-left">From: ${b.song.album || "N/A"
-            }</p>
-							<p class="text-xs text-gray-900 mt-1 text-left">Played at: ${formatData(frDate)
-            }</p>
-						</div>`,
-            songHistListEle.appendChild(liEle);
-        }
-      }
-      xhttp.open('GET', 'https://itunes.apple.com/search?term=' + b.song.artist + ' - ' + b.song.title + '&media=music&limit=1', true);
-      xhttp.crossOrigin = "anonymous";
-      xhttp.send();
-    })
-      : songHistListEle.innerHTML =
-      '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>';
+      const T = b.song.art;
+      const D = document.createElement("li");
+      D.className = "py-2 flex items-center", D.innerHTML = `
+                    ${T ? `<img class="rounded-lg object-cover" src="${T}" width="100" alt="${b.title} artwork">` : ""}
+                    <div class="ml-3 flex-grow">
+                        <p class="text-2xl font-bold text-gray-900 text-left">${b.song.title}</p>
+                        <p class="text-medium text-gray-900 text-left">${b.song.artist}</p>
+                        <p class="text-xs text-gray-900 mt-1 text-left">${formatData(frDate)}</p>
+                    </div>
+                `, songHistListEle.appendChild(D)
+    }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
   }
+
+  document.getElementById("HistoryModalBtn").addEventListener("click", () => {
+    getDataSelected(musicData[currentMusic].api),
+      songListArt(),
+      document.getElementById("historyModal").classList.remove("hidden");
+  }),
+    document.getElementById("closeHistoryModal").addEventListener("click", () => {
+      document.getElementById("historyModal").classList.add("hidden");
+    });
 
   const formatData = function (numeric) {
     const date = new Date(numeric * 1000);
@@ -335,16 +320,6 @@ function processData() {
       ? histBtnEle.style.display = "block"
       : histBtnEle.style.display = "none";
   }
-
-  document.getElementById("HistoryModalBtn").addEventListener("click", () => {
-    getDataSelected(musicData[currentMusic].api),
-      songListArt(),
-      document.getElementById("historyModal").classList.remove("hidden");
-  });
-
-  document.getElementById("closeHistoryModal").addEventListener("click", () => {
-    document.getElementById("historyModal").classList.add("hidden");
-  });
 
   const getCoverArt = function (a, t) {
     var urlCoverArt = musicData[currentMusic].posterUrl;
@@ -440,10 +415,10 @@ function processData() {
     }
   }
 
-  // function getData() {
-  //   setInterval(() => {
+  function getData() {
+    setInterval(() => {
       getDataSelected(musicData[currentMusic].api);
-  //   }, 3000);
-  // }
-  // getData();
+    }, 3000);
+  }
+  getData();
 }

@@ -885,7 +885,8 @@ body:hover::-webkit-scrollbar-thumb {
 	margin-inline: auto;
 	align-self: center;
 	overflow: hidden;
-	border-radius: var(--radius-16);
+	border-radius: var(--radius-12);
+	box-shadow: 0 4px 30px rgba(54, 53, 53, 0.482);
 }
 
 .label-wrapper {

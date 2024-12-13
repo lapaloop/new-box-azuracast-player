@@ -232,46 +232,29 @@ function processData() {
   playerSkipPrevBtn.addEventListener("click", skipPrev);
 
   /**
-   * SHUFFLE MUSIC
+   * History button
    */
-
-  /** get random number for shuffle */
-  // const getRandomMusic = () => Math.floor(Math.random() * musicData.length);
-
-  // const shuffleMusic = () => currentMusic = getRandomMusic();
-
-  // const playerShuffleBtn = document.querySelector("[data-shuffle]");
-  // let isShuffled = false;
-
-  // const shuffle = function () {
-  //   playerShuffleBtn.classList.toggle("active");
-
-  //   isShuffled = isShuffled ? false : true;
-  // }
-
-  // playerShuffleBtn.addEventListener("click", shuffle);
+  const histBtnEle = document.querySelector("[data-history]");
+  const closeHistoryModal = document.querySelector("[close-history-modal]");
+  const histBtn = function (d) {
+    Array.isArray(d) && d.length > 0
+      ? histBtnEle.style.display = "block"
+      : histBtnEle.style.display = "none";
+  }
+  histBtnEle.addEventListener("click", () => {
+    getDataSelected(musicData[currentMusic].api),
+      songListArt(),
+      document.getElementById("historyModal").classList.remove("hidden");
+  });
+  closeHistoryModal.addEventListener("click", () => {
+    document.getElementById("historyModal").classList.add("hidden");
+  });
 
   /**
-   * REPEAT MUSIC
+   * History song list
    */
 
-  // const playerRepeatBtn = document.querySelector("[data-repeat]");
-
-  // const repeat = function () {
-  //   if (!audioSource.loop) {
-  //     audioSource.loop = true;
-  //     this.classList.add("active");
-  //   } else {
-  //     audioSource.loop = false;
-  //     this.classList.remove("active");
-  //   }
-  // }
-
-  // playerRepeatBtn.addEventListener("click", repeat);
-
-  // const songHistListEle = document.getElementById("song-history-list");
   // const songHistListEle = document.querySelector("[song-history-list]");
-
   const songListArt = function (d) {
     const songHistListEle = document.querySelector("[song-history-list]");
     songHistListEle.innerHTML = "";
@@ -284,23 +267,21 @@ function processData() {
       D.className = "py-2 flex items-center", D.innerHTML = `
                     ${T ? `<img class="rounded-lg object-cover" src="${T}" width="100" alt="${b.title} artwork">` : ""}
                     <div class="ml-3 flex-grow">
-                        <p class="text-2xl font-bold text-gray-900 text-left">${b.song.title}</p>
-                        <p class="text-medium text-gray-900 text-left">${b.song.artist}</p>
+                        <p class="text-2xl font-bold text-white text-left">${b.song.title}</p>
+                        <p class="text-medium text-gray-400 text-left">${b.song.artist}</p>
                         <p class="text-xs text-gray-900 mt-1 text-left">${formatData(frDate)}</p>
                     </div>
                 `, songHistListEle.appendChild(D)
     }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
   }
 
-  document.getElementById("HistoryModalBtn").addEventListener("click", () => {
-    getDataSelected(musicData[currentMusic].api),
-      songListArt(),
-      document.getElementById("historyModal").classList.remove("hidden");
-  }),
-    document.getElementById("closeHistoryModal").addEventListener("click", () => {
-      document.getElementById("historyModal").classList.add("hidden");
-    });
-
+  /**
+   * 
+   * @param {*} numeric 
+   * @returns 
+   * 
+   * Format number to time
+   */
   const formatData = function (numeric) {
     const date = new Date(numeric * 1000);
     date.toLocaleString();
@@ -314,13 +295,13 @@ function processData() {
     return formattedDate;
   }
 
-  const histBtnEle = document.getElementById("HistoryModalBtn");
-  const histBtn = function (d) {
-    Array.isArray(d) && d.length > 0
-      ? histBtnEle.style.display = "block"
-      : histBtnEle.style.display = "none";
-  }
-
+  /**
+   * 
+   * @param {*} a = artist
+   * @param {*} t = title
+   * 
+   * Get Cover art
+   */
   const getCoverArt = function (a, t) {
     var urlCoverArt = musicData[currentMusic].posterUrl;
     var xhttp = new XMLHttpRequest();

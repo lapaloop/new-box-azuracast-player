@@ -166,14 +166,6 @@ function processData() {
 
   addEventOnElements(playlistItems, "click", changePlayerInfo);
 
-  /** pass seconds and get timcode formate */
-  const getTimecode = function (duration) {
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.ceil(duration - (minutes * 60));
-    const timecode = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-    return timecode;
-  }
-
   /**
    * PLAY MUSIC
    * 
@@ -269,7 +261,7 @@ function processData() {
                     <div class="ml-3 flex-grow">
                         <p class="text-2xl font-bold text-white text-left">${b.song.title}</p>
                         <p class="text-medium text-gray-400 text-left">${b.song.artist}</p>
-                        <p class="text-xs text-gray-900 mt-1 text-left">${formatData(frDate)}</p>
+                        <p class="text-xs text-gray-900 mt-1 text-left">${setTime(getTime(frDate))}</p>
                     </div>
                 `, songHistListEle.appendChild(liEle)
     }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
@@ -282,17 +274,49 @@ function processData() {
    * 
    * Format number to time
    */
-  const formatData = function (numeric) {
-    const date = new Date(numeric * 1000);
-    date.toLocaleString();
-    date.toDateString();
-    date.toLocaleTimeString();
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    const formattedDate = date.toLocaleTimeString("en-us", options);
-    return formattedDate;
+  // const formatData = function (numeric) {
+  //   const date = new Date(numeric * 1000);
+  //   date.toLocaleString();
+  //   date.toDateString();
+  //   date.toLocaleTimeString();
+  //   const options = {
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //   };
+  //   const formattedDate = date.toLocaleTimeString("en-us", options);
+  //   return formattedDate;
+  // }
+
+  const getTime = function (t) {
+    return new Date(t * 1000);
+  }
+
+  const setTime = function (t) {
+    const second = (o) => (Date.now() - o) / 1000;
+    const format = {
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+      second: 1,
+    },
+      n = (o) => {
+        for (const [i, c] of Object.entries(format))
+          if (o >= c || i === "second")
+            return {
+              value: Math.floor(Math.abs(o / c)),
+              unit: i,
+            };
+      },
+      a = (o) => {
+        const i = new Intl.RelativeTimeFormat("en");
+        const c = second(o);
+        const { value: l, unit: _ } = n(c);
+        const O = c > 0 ? -l : l;
+        return i.format(O, _);
+      },
+      r = new Date(t);
+
+    return a(r);
   }
 
   /**
@@ -364,7 +388,8 @@ function processData() {
       }
     }
     xhttp.open('GET', 'https://itunes.apple.com/search?term=' + a + " " + t + '&media=music&limit=1', true);
-    xhttp.crossOrigin = "anonymous";
+    xhttp.setRequestHeader('Accept', 'application/json');
+    xhttp.setRequestHeader('Content-type', 'application/json');
     xhttp.send();
   }
 

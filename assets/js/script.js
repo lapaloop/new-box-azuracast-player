@@ -262,16 +262,16 @@ function processData() {
     Array.isArray(d) && d.length > 0 ? d.forEach(b => {
       if (!b.song.title || !b.song.artist) return;
       const frDate = b.played_at;
-      const T = b.song.art;
-      const D = document.createElement("li");
-      D.className = "py-2 flex items-center", D.innerHTML = `
-                    ${T ? `<img class="rounded-lg object-cover" src="${T}" width="100" alt="${b.title} artwork">` : ""}
+      const coverArt = b.song.art;
+      const liEle = document.createElement("li");
+      liEle.className = "py-2 flex items-center", liEle.innerHTML = `
+                    ${coverArt ? `<img class="rounded-lg object-cover" src="${coverArt}" width="100" alt="${b.title} artwork">` : ""}
                     <div class="ml-3 flex-grow">
                         <p class="text-2xl font-bold text-white text-left">${b.song.title}</p>
                         <p class="text-medium text-gray-400 text-left">${b.song.artist}</p>
                         <p class="text-xs text-gray-900 mt-1 text-left">${formatData(frDate)}</p>
                     </div>
-                `, songHistListEle.appendChild(D)
+                `, songHistListEle.appendChild(liEle)
     }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
   }
 

@@ -388,8 +388,6 @@ function processData() {
       }
     }
     xhttp.open('GET', 'https://itunes.apple.com/search?term=' + a + " " + t + '&media=music&limit=1', true);
-    xhttp.setRequestHeader('Accept', 'application/json');
-    xhttp.setRequestHeader('Content-type', 'application/json');
     xhttp.send();
   }
 

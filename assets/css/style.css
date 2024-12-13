@@ -472,6 +472,7 @@ video {
 .object-cover {
 	-o-object-fit: cover;
 	object-fit: cover;
+	box-shadow: 0 4px 30px rgba(54, 53, 53, 0.482);
 }
 .px-4 {
 	padding-left: 1rem;
@@ -1289,7 +1290,7 @@ body:hover::-webkit-scrollbar-thumb {
 	margin: 20px;
 }
 #historyModal .bg-white {
-	background: #000;
+	background: #666464;
 	backdrop-filter: blur(12.1px);
 	border-radius: 16px;
 	-webkit-backdrop-filter: blur(12.1px);
@@ -1303,7 +1304,7 @@ body:hover::-webkit-scrollbar-thumb {
 	letter-spacing: 0.2px;
 }
 #historyModal .text-xs {
-	font-family: monospace;
+	font-family: var(--ff-inter);
 	font-size: 1rem;
 	letter-spacing: 0.5px;
 	color: rgba(255, 255, 255, 0.914);

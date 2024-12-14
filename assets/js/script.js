@@ -326,69 +326,85 @@ function processData() {
    * 
    * Get Cover art
    */
-  const getCoverArt = function (a, t) {
-    var urlCoverArt = musicData[currentMusic].posterUrl;
-    var xhttp = new XMLHttpRequest();
+  const getCoverArt = async function (t) {
+    const cover = (l, _) => l.replace(/"100x100"/, _);
+    const track = t.text;
+    const resp = await fetch(
+      `https://itunes.apple.com/search?limit=1&term=${encodeURIComponent(track)}`
+    );
 
-    xhttp.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const data = JSON.parse(this.responseText);
-        const artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : urlCoverArt;
+    if (resp.status === 403)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: t.art
+      };
 
-        urlCoverArt = (artworkUrl100 != urlCoverArt) ? artworkUrl100.replace('100x100bb', '512x512bb') : urlCoverArt;
-        var urlCoverArt96 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '96x96bb') : urlCoverArt;
-        var urlCoverArt128 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '128x128bb') : urlCoverArt;
-        var urlCoverArt192 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '192x192bb') : urlCoverArt;
-        var urlCoverArt256 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '256x256bb') : urlCoverArt;
-        var urlCoverArt384 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '384x384bb') : urlCoverArt;
+    const o = resp.ok ? await resp.json() : {};
+    if (!o.results || o.results.length === 0)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: t.art
+      };
 
-        playerBanner.src = urlCoverArt;
-        document.getElementById("artwork").src = urlCoverArt;
-        document.body.style.backgroundImage = `url(${urlCoverArt})`;
-        playerBanner.setAttribute("alt", `${t} Album Poster`);
+    const reslt = o.results[0];
+    const c = {
+      title: reslt.trackName || t.title,
+      artist: reslt.artistName || t.artist,
+      album: reslt.collectionName || t.album,
+      art: reslt.artworkUrl100
+        ? cover(reslt.artworkUrl100.replace("100x100", "512x512"))
+        : t.art,
+    };
 
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: t,
-            artist: a,
-            artwork: [
-              {
-                src: urlCoverArt96,
-                sizes: '96x96',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt128,
-                sizes: '128x128',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt192,
-                sizes: '192x192',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt256,
-                sizes: '256x256',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt384,
-                sizes: '384x384',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt,
-                sizes: '512x512',
-                type: 'image/png'
-              }
-            ]
-          });
-        }
-      }
+    playerBanner.src = c.art;
+    document.getElementById("artwork").src = c.art;
+    document.body.style.backgroundImage = `url(${c.art})`;
+    playerBanner.setAttribute("alt", `${c.title} Album Poster`);
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: c.title,
+        artist: c.artist,
+        artwork: [
+          {
+            src: c.art,
+            sizes: '96x96',
+            type: 'image/png'
+          },
+          {
+            src: c.art,
+            sizes: '128x128',
+            type: 'image/png'
+          },
+          {
+            src: c.art,
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: c.art,
+            sizes: '256x256',
+            type: 'image/png'
+          },
+          {
+            src: c.art,
+            sizes: '384x384',
+            type: 'image/png'
+          },
+          {
+            src: c.art,
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      });
     }
-    xhttp.open('GET', 'https://itunes.apple.com/search?term=' + a + " " + t + '&media=music&limit=1', true);
-    xhttp.send();
+
+    return c;
   }
 
   // Get data from selected station
@@ -408,7 +424,8 @@ function processData() {
       // document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
       // getMetaData(reslt.now_playing.song);
-      getCoverArt(artist, title);
+      const np = reslt.now_playing.song;
+      getCoverArt(np);
 
       mscHist = reslt.song_history || [];
       songListArt(mscHist);

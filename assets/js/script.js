@@ -341,8 +341,8 @@ function processData() {
         art: t.art
       };
 
-    const o = resp.ok ? await resp.json() : {};
-    if (!o.results || o.results.length === 0)
+    const data = resp.ok ? await resp.json() : {};
+    if (!data.results || data.results.length === 0)
       return {
         title: t.title,
         artist: t.artist,
@@ -350,53 +350,28 @@ function processData() {
         art: t.art
       };
 
-    const reslt = o.results[0];
-    const c = {
-      title: reslt.trackName || t.title,
-      artist: reslt.artistName || t.artist,
-      album: reslt.collectionName || t.album,
-      art: reslt.artworkUrl100
-        ? cover(reslt.artworkUrl100.replace("100x100", "512x512"))
+    const itunes = data.results[0];
+    const results = {
+      title: itunes.trackName || t.title,
+      artist: itunes.artistName || t.artist,
+      album: itunes.collectionName || t.album,
+      art: itunes.artworkUrl100
+        ? cover(itunes.artworkUrl100.replace("100x100", "512x512"))
         : t.art,
     };
 
-    playerBanner.src = c.art;
-    document.getElementById("artwork").src = c.art;
-    document.body.style.backgroundImage = `url(${c.art})`;
-    playerBanner.setAttribute("alt", `${c.title} Album Poster`);
+    playerBanner.src = results.art;
+    document.getElementById("artwork").src = results.art;
+    document.body.style.backgroundImage = `url(${results.art})`;
+    playerBanner.setAttribute("alt", `${results.title} Album Poster`);
 
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: c.title,
-        artist: c.artist,
+        title: t.title,
+        artist: t.artist,
         artwork: [
           {
-            src: c.art,
-            sizes: '96x96',
-            type: 'image/png'
-          },
-          {
-            src: c.art,
-            sizes: '128x128',
-            type: 'image/png'
-          },
-          {
-            src: c.art,
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: c.art,
-            sizes: '256x256',
-            type: 'image/png'
-          },
-          {
-            src: c.art,
-            sizes: '384x384',
-            type: 'image/png'
-          },
-          {
-            src: c.art,
+            src: results.art,
             sizes: '512x512',
             type: 'image/png'
           }
@@ -404,7 +379,7 @@ function processData() {
       });
     }
 
-    return c;
+    return results;
   }
 
   // Get data from selected station

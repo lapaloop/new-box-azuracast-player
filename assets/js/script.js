@@ -393,6 +393,10 @@ function processData() {
       // const art = reslt.now_playing.song.art || T.posterUrl;
       // const cover = art;
 
+      // Open spotify
+      const stream = "https://open.spotify.com/search/" + encodeURIComponent(artist + " - " + title);
+      document.getElementById("spotify").href = stream;
+
       document.getElementById("title").innerHTML = title;
       document.title = artist + " - " + title;
       document.getElementById("album").innerHTML = album || "N/A";

@@ -1,13 +1,10 @@
 "use strict";
 
 /**
- * all music information
+ * All Public Station in Azuracast information
  */
 
 const musicData = [];
-
-/** Azuracast server */
-// const apiUrl = "https://s1.cloudmu.id";
 
 /**
  * Fetch API data from Azuracast server
@@ -147,9 +144,7 @@ function processData() {
   const audioSource = new Audio(musicData[currentMusic].streamUrl);
 
   const changePlayerInfo = function () {
-    // playerBanner.src = musicData[currentMusic].posterUrl;
     playerBanner.setAttribute("alt", `${musicData[currentMusic].title} Album Poster`);
-    // document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
     playerTitle.textContent = musicData[currentMusic].title;
     playerAlbum.textContent = musicData[currentMusic].album;
     playerArtist.textContent = musicData[currentMusic].artist;
@@ -236,9 +231,9 @@ function processData() {
    * History song list
    */
 
-  // const songHistListEle = document.querySelector("[song-history-list]");
+  const songHistListEle = document.querySelector("[song-history-list]");
   const songListArt = function (d) {
-    const songHistListEle = document.querySelector("[song-history-list]");
+    // const songHistListEle = document.querySelector("[song-history-list]");
     songHistListEle.innerHTML = "";
 
     Array.isArray(d) && d.length > 0 ? d.forEach(async b => {

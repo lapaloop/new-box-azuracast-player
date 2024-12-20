@@ -1,14 +1,9 @@
 "use strict";
 
-/**
- * All Public Station in Azuracast information
- */
-
+/** All Public Station in Azuracast information */
 const musicData = [];
 
-/**
- * Fetch API data from Azuracast server
- */
+/** Fetch API data from Azuracast server */
 function fetchData() {
   fetch(apiUrl + "/api/nowplaying")
     .then((e) => (e.ok || checkError("Failed to load API data", () => location.reload()), e.json()))
@@ -52,24 +47,18 @@ fetchData();
 
 /**
  * Process data
+ * from feth data
  */
 function processData() {
-  /**
- * add eventListnere on all elements that are passed
- */
 
+  // add eventListnere on all elements that are passed
   const addEventOnElements = function (elements, eventType, callback) {
     for (let i = 0, len = elements.length; i < len; i++) {
       elements[i].addEventListener(eventType, callback);
     }
   }
 
-  /**
-   * PLAYLIST
-   * 
-   * add all music in playlist, from 'musicData'
-   */
-
+  // add all station azuracast public in playlist, from 'musicData'
   const playlist = document.querySelector("[data-music-list]");
 
   for (let i = 0, len = musicData.length; i < len; i++) {
@@ -109,7 +98,6 @@ function processData() {
 
   /**
    * PLAYLIST ITEM
-   * 
    * remove active state from last time played music
    * and add active state in clicked music
    */
@@ -132,7 +120,6 @@ function processData() {
 
   /**
    * PLAYER
-   * 
    * change all visual information on player, based on current music
    */
 
@@ -170,7 +157,6 @@ function processData() {
     if (audioSource.paused) {
       audioSource.play();
       playBtn.classList.add("active");
-      // playInterval = setInterval(updateRunningTime, 500);
     } else {
       audioSource.pause();
       playBtn.classList.remove("active");
@@ -181,7 +167,7 @@ function processData() {
   playBtn.addEventListener("click", playMusic);
 
   /**
-   * SKIP TO NEXT MUSIC
+   * SKIP TO NEXT STATION
    */
 
   const playerSkipNextBtn = document.querySelector("[data-skip-next]");
@@ -197,7 +183,7 @@ function processData() {
   playerSkipNextBtn.addEventListener("click", skipNext);
 
   /**
-   * SKIP TO PREVIOUS MUSIC
+   * SKIP TO PREVIOUS STATION
    */
 
   const playerSkipPrevBtn = document.querySelector("[data-skip-prev]");
@@ -213,8 +199,11 @@ function processData() {
   playerSkipPrevBtn.addEventListener("click", skipPrev);
 
   /**
+   * HISTORY STATION
+   * 
    * History button
    */
+
   const histBtnEle = document.querySelector("[data-history]");
   const closeHistoryModal = document.querySelector("[close-history-modal]");
 
@@ -228,12 +217,14 @@ function processData() {
   });
 
   /**
+   * SHOW HISTORY
+   * 
    * History song list
    */
 
   const songHistListEle = document.querySelector("[song-history-list]");
+
   const songListArt = function (d) {
-    // const songHistListEle = document.querySelector("[song-history-list]");
     songHistListEle.innerHTML = "";
 
     Array.isArray(d) && d.length > 0 ? d.forEach(async b => {
@@ -290,7 +281,7 @@ function processData() {
    * @param {*} a = artist
    * @param {*} t = title
    * 
-   * Get Cover art
+   * Get Now Playing Cover art
    */
   const getCoverArt = async function (t) {
     const cover = (l, _) => l.replace(/"100x100"/, _);
@@ -349,6 +340,13 @@ function processData() {
     return results;
   }
 
+  /**
+   * 
+   * @param {*} t 
+   * @returns 
+   * 
+   * Get Cover Art history
+   */
   const getHistCoverArt = async function (t) {
     const cover = (l, _) => l.replace(/"100x100"/, _);
     const track = t.text;

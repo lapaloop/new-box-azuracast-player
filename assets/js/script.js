@@ -329,6 +329,7 @@ function processData() {
   const getCoverArt = async function (t) {
     const cover = (l, _) => l.replace(/"100x100"/, _);
     const track = t.text;
+    const urlCoverArt = t.art;
     const resp = await fetch(
       `https://itunes.apple.com/search?limit=1&term=${encodeURIComponent(track)}`
     );
@@ -338,7 +339,7 @@ function processData() {
         title: t.title,
         artist: t.artist,
         album: t.album,
-        art: t.art
+        art: urlCoverArt,
       };
 
     const data = resp.ok ? await resp.json() : {};
@@ -347,7 +348,7 @@ function processData() {
         title: t.title,
         artist: t.artist,
         album: t.album,
-        art: t.art
+        art: urlCoverArt,
       };
 
     const itunes = data.results[0];
@@ -357,10 +358,10 @@ function processData() {
       album: itunes.collectionName || t.album,
       art: itunes.artworkUrl100
         ? cover(itunes.artworkUrl100.replace("100x100", "512x512"))
-        : t.art,
+        : urlCoverArt,
     };
 
-    playerBanner.src = results.art;
+    playerBanner.src = results.art || urlCoverArt;
     document.getElementById("artwork").src = results.art;
     document.body.style.backgroundImage = `url(${results.art})`;
     playerBanner.setAttribute("alt", `${results.title} Album Poster`);

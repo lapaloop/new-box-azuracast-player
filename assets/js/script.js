@@ -146,7 +146,6 @@ function processData() {
   const playerBanner = document.querySelector("[data-player-banner]");
   const playerTitle = document.querySelector("[data-title]");
   const playerAlbum = document.querySelector("[data-album]");
-  // const playerYear = document.querySelector("[data-year]");
   const playerArtist = document.querySelector("[data-artist]");
 
   const audioSource = new Audio(musicData[currentMusic].streamUrl);
@@ -157,7 +156,6 @@ function processData() {
     // document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
     playerTitle.textContent = musicData[currentMusic].title;
     playerAlbum.textContent = musicData[currentMusic].album;
-    // playerYear.textContent = musicData[currentMusic].year;
     playerArtist.textContent = musicData[currentMusic].artist;
 
     audioSource.src = musicData[currentMusic].streamUrl;
@@ -267,26 +265,6 @@ function processData() {
     }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
   }
 
-  /**
-   * 
-   * @param {*} numeric 
-   * @returns 
-   * 
-   * Format number to time
-   */
-  // const formatData = function (numeric) {
-  //   const date = new Date(numeric * 1000);
-  //   date.toLocaleString();
-  //   date.toDateString();
-  //   date.toLocaleTimeString();
-  //   const options = {
-  //     hour: "2-digit",
-  //     minute: "2-digit",
-  //   };
-  //   const formattedDate = date.toLocaleTimeString("en-us", options);
-  //   return formattedDate;
-  // }
-
   const getTime = function (t) {
     return new Date(t * 1000);
   }
@@ -326,69 +304,61 @@ function processData() {
    * 
    * Get Cover art
    */
-  const getCoverArt = function (a, t) {
-    var urlCoverArt = musicData[currentMusic].posterUrl;
-    var xhttp = new XMLHttpRequest();
+  const getCoverArt = async function (t) {
+    const cover = (l, _) => l.replace(/"100x100"/, _);
+    const track = t.text;
+    const urlCoverArt = t.art;
+    const resp = await fetch(
+      `https://itunes.apple.com/search?limit=1&term=${encodeURIComponent(track)}`
+    );
 
-    xhttp.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const data = JSON.parse(this.responseText);
-        const artworkUrl100 = (data.resultCount) ? data.results[0].artworkUrl100 : urlCoverArt;
+    if (resp.status === 403)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: urlCoverArt,
+      };
 
-        urlCoverArt = (artworkUrl100 != urlCoverArt) ? artworkUrl100.replace('100x100bb', '512x512bb') : urlCoverArt;
-        var urlCoverArt96 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '96x96bb') : urlCoverArt;
-        var urlCoverArt128 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '128x128bb') : urlCoverArt;
-        var urlCoverArt192 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '192x192bb') : urlCoverArt;
-        var urlCoverArt256 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '256x256bb') : urlCoverArt;
-        var urlCoverArt384 = (artworkUrl100 != urlCoverArt) ? urlCoverArt.replace('512x512bb', '384x384bb') : urlCoverArt;
+    const data = resp.ok ? await resp.json() : {};
+    if (!data.results || data.results.length === 0)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: urlCoverArt,
+      };
 
-        playerBanner.src = urlCoverArt;
-        document.getElementById("artwork").src = urlCoverArt;
-        document.body.style.backgroundImage = `url(${urlCoverArt})`;
-        playerBanner.setAttribute("alt", `${t} Album Poster`);
+    const itunes = data.results[0];
+    const results = {
+      title: itunes.trackName || t.title,
+      artist: itunes.artistName || t.artist,
+      album: itunes.collectionName || t.album,
+      art: itunes.artworkUrl100
+        ? cover(itunes.artworkUrl100.replace("100x100", "512x512"))
+        : urlCoverArt,
+    };
 
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: t,
-            artist: a,
-            artwork: [
-              {
-                src: urlCoverArt96,
-                sizes: '96x96',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt128,
-                sizes: '128x128',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt192,
-                sizes: '192x192',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt256,
-                sizes: '256x256',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt384,
-                sizes: '384x384',
-                type: 'image/png'
-              },
-              {
-                src: urlCoverArt,
-                sizes: '512x512',
-                type: 'image/png'
-              }
-            ]
-          });
-        }
-      }
+    playerBanner.src = results.art || urlCoverArt;
+    document.getElementById("artwork").src = results.art;
+    document.body.style.backgroundImage = `url(${results.art})`;
+    playerBanner.setAttribute("alt", `${results.title} Album Poster`);
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: t.title,
+        artist: t.artist,
+        artwork: [
+          {
+            src: results.art,
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      });
     }
-    xhttp.open('GET', 'https://itunes.apple.com/search?term=' + a + " " + t + '&media=music&limit=1', true);
-    xhttp.send();
+
+    return results;
   }
 
   // Get data from selected station
@@ -402,13 +372,18 @@ function processData() {
       // const art = reslt.now_playing.song.art || T.posterUrl;
       // const cover = art;
 
+      // Open spotify
+      const stream = "https://open.spotify.com/search/" + encodeURIComponent(artist + " - " + title);
+      document.getElementById("spotify").href = stream;
+
       document.getElementById("title").innerHTML = title;
       document.title = artist + " - " + title;
       document.getElementById("album").innerHTML = album || "N/A";
       // document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
       // getMetaData(reslt.now_playing.song);
-      getCoverArt(artist, title);
+      const np = reslt.now_playing.song;
+      getCoverArt(np);
 
       mscHist = reslt.song_history || [];
       songListArt(mscHist);

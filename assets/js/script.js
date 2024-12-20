@@ -146,7 +146,6 @@ function processData() {
   const playerBanner = document.querySelector("[data-player-banner]");
   const playerTitle = document.querySelector("[data-title]");
   const playerAlbum = document.querySelector("[data-album]");
-  // const playerYear = document.querySelector("[data-year]");
   const playerArtist = document.querySelector("[data-artist]");
 
   const audioSource = new Audio(musicData[currentMusic].streamUrl);
@@ -157,7 +156,6 @@ function processData() {
     // document.body.style.backgroundImage = `url(${musicData[currentMusic].posterUrl})`;
     playerTitle.textContent = musicData[currentMusic].title;
     playerAlbum.textContent = musicData[currentMusic].album;
-    // playerYear.textContent = musicData[currentMusic].year;
     playerArtist.textContent = musicData[currentMusic].artist;
 
     audioSource.src = musicData[currentMusic].streamUrl;
@@ -266,26 +264,6 @@ function processData() {
                 `, songHistListEle.appendChild(liEle)
     }) : songHistListEle.innerHTML = '<li class="py-2 flex items-center justify-center"><img src="./assets/images/spinner.svg" alt="Loading..." class="animate-spin h-30 w-30"></li>'
   }
-
-  /**
-   * 
-   * @param {*} numeric 
-   * @returns 
-   * 
-   * Format number to time
-   */
-  // const formatData = function (numeric) {
-  //   const date = new Date(numeric * 1000);
-  //   date.toLocaleString();
-  //   date.toDateString();
-  //   date.toLocaleTimeString();
-  //   const options = {
-  //     hour: "2-digit",
-  //     minute: "2-digit",
-  //   };
-  //   const formattedDate = date.toLocaleTimeString("en-us", options);
-  //   return formattedDate;
-  // }
 
   const getTime = function (t) {
     return new Date(t * 1000);

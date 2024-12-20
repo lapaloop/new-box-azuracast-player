@@ -6,11 +6,6 @@
 
 const musicData = [];
 
-/**
- * History song data
- */
-let mscHist = [];
-
 /** Azuracast server */
 // const apiUrl = "https://s1.cloudmu.id";
 
@@ -227,11 +222,7 @@ function processData() {
    */
   const histBtnEle = document.querySelector("[data-history]");
   const closeHistoryModal = document.querySelector("[close-history-modal]");
-  const histBtn = function (d) {
-    Array.isArray(d) && d.length > 0
-      ? histBtnEle.style.display = "block"
-      : histBtnEle.style.display = "none";
-  }
+
   histBtnEle.addEventListener("click", () => {
     getDataSelected(musicData[currentMusic].api),
       songListArt(musicData[currentMusic].history),
@@ -408,8 +399,6 @@ function processData() {
       const artist = reslt.now_playing.song.artist || T.artist;
       const title = reslt.now_playing.song.title || T.title;
       const album = reslt.now_playing.song.album || T.album;
-      // const art = reslt.now_playing.song.art || T.posterUrl;
-      // const cover = art;
 
       // Open spotify
       const stream = "https://open.spotify.com/search/" + encodeURIComponent(artist + " - " + title);
@@ -418,15 +407,9 @@ function processData() {
       document.getElementById("title").innerHTML = title;
       document.title = artist + " - " + title;
       document.getElementById("album").innerHTML = album || "N/A";
-      // document.getElementById("artwork").src = cover;
       document.getElementById("artist").innerHTML = artist;
-      // getMetaData(reslt.now_playing.song);
       const np = reslt.now_playing.song;
       getCoverArt(np);
-
-      mscHist = reslt.song_history || [];
-      // songListArt(mscHist);
-      histBtn(mscHist);
 
     } catch (e) {
       console.error("Error fetching data:", e);

@@ -41,6 +41,7 @@ function fetchData() {
           played_at: reslt.now_playing.played_at,
           elapsed: reslt.now_playing.elapsed,
           remaining: reslt.now_playing.remaining,
+          history: reslt.song_history,
         };
         musicData.push(apiData);
       }),
@@ -233,7 +234,7 @@ function processData() {
   }
   histBtnEle.addEventListener("click", () => {
     getDataSelected(musicData[currentMusic].api),
-      songListArt(),
+      songListArt(musicData[currentMusic].history),
       document.getElementById("historyModal").classList.remove("hidden");
   });
   closeHistoryModal.addEventListener("click", () => {
@@ -249,10 +250,11 @@ function processData() {
     const songHistListEle = document.querySelector("[song-history-list]");
     songHistListEle.innerHTML = "";
 
-    Array.isArray(d) && d.length > 0 ? d.forEach(b => {
+    Array.isArray(d) && d.length > 0 ? d.forEach(async b => {
       if (!b.song.title || !b.song.artist) return;
+      const n = await getHistCoverArt(b.song, !1);
       const frDate = b.played_at;
-      const coverArt = b.song.art;
+      const coverArt = n.art;
       const liEle = document.createElement("li");
       liEle.className = "py-2 flex items-center", liEle.innerHTML = `
                     ${coverArt ? `<img class="rounded-lg object-cover" src="${coverArt}" width="100" alt="${b.title} artwork">` : ""}
@@ -361,6 +363,43 @@ function processData() {
     return results;
   }
 
+  const getHistCoverArt = async function (t) {
+    const cover = (l, _) => l.replace(/"100x100"/, _);
+    const track = t.text;
+    const urlCoverArt = t.art;
+    const resp = await fetch(
+      `https://itunes.apple.com/search?limit=1&term=${encodeURIComponent(track)}`
+    );
+
+    if (resp.status === 403)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: urlCoverArt,
+      };
+
+    const data = resp.ok ? await resp.json() : {};
+    if (!data.results || data.results.length === 0)
+      return {
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        art: urlCoverArt,
+      };
+
+    const itunes = data.results[0];
+    const results = {
+      title: itunes.trackName || t.title,
+      artist: itunes.artistName || t.artist,
+      album: itunes.collectionName || t.album,
+      art: itunes.artworkUrl100
+        ? cover(itunes.artworkUrl100.replace("100x100", "512x512"))
+        : urlCoverArt,
+    };
+    return results;
+  }
+
   // Get data from selected station
   async function getDataSelected(data) {
     try {
@@ -386,7 +425,7 @@ function processData() {
       getCoverArt(np);
 
       mscHist = reslt.song_history || [];
-      songListArt(mscHist);
+      // songListArt(mscHist);
       histBtn(mscHist);
 
     } catch (e) {

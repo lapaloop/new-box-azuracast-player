@@ -617,6 +617,7 @@ video {
 	--primary: var(--light-sky-blue);
 	--on-primary: var(--prussian-blue);
 
+	--shadow-player-cover: 0 12px 15px rgba(0, 0, 0, 0.3);
 	--cover-blurred: 1.5rem;
 	--gradient-botom-black: linear-gradient(
 		to bottom,
@@ -887,7 +888,7 @@ body:hover::-webkit-scrollbar-thumb {
 	align-self: center;
 	overflow: hidden;
 	border-radius: var(--radius-12);
-	box-shadow: 0 4px 30px rgba(54, 53, 53, 0.482);
+	box-shadow: var(--shadow-player-cover);
 }
 
 .label-wrapper {
@@ -1001,7 +1002,7 @@ body:hover::-webkit-scrollbar-thumb {
 	right: -180px;
 	width: 180px;
 	height: 100vh;
-	background-color: var(--background);
+	background-color: var(--background-opacity);
 	padding: 28px;
 	border-top-left-radius: var(--radius-16);
 	border-bottom-left-radius: var(--radius-16);
@@ -1271,8 +1272,8 @@ body:hover::-webkit-scrollbar-thumb {
    * PLAYLIST
    */
 	.playlist {
-		padding: 32px;
-		width: 220px;
+		padding: 22px;
+		width: 180px;
 	}
 
 	.music-list {

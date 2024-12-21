@@ -12,6 +12,7 @@
 ### Demo Screeshots
 
 ![Radio Player Desktop Demo](./readme-images/desktop.png "Desktop Demo")
+![Radio Player Desktop Demo](./readme-images/desktop_2.png "Desktop Demo")
 
 ### Prerequisites
 

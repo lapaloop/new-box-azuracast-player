@@ -13,7 +13,7 @@ function fetchData() {
         const fileName = ".jpg";
         const extension = fileName.split("/").pop();
 
-        const apiData = {
+        musicData.push({
           posterUrl: reslt.now_playing.song.art,
           imgBrand: apiUrl + "/static/uploads/" + reslt.station.shortcode + "/" + "album_art." + randomNumber + extension,
           bgimg: reslt.now_playing.song.art,
@@ -26,8 +26,7 @@ function fetchData() {
           duration: reslt.now_playing.duration,
           played_at: reslt.now_playing.played_at,
           history: reslt.song_history,
-        };
-        musicData.push(apiData);
+        });
       }),
         processData();
     })

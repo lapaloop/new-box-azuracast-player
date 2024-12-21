@@ -617,6 +617,13 @@ video {
 	--primary: var(--light-sky-blue);
 	--on-primary: var(--prussian-blue);
 
+	--cover-blurred: 1.5rem;
+	--gradient-botom-black: linear-gradient(
+		to bottom,
+		transparent 0%,
+		black 100%
+	);
+
 	/**
    * gradient
    */
@@ -729,7 +736,7 @@ body {
 	min-height: 100vh;
 	min-width: 250px;
 	background-image: url("../images/poster.jpg");
-	background-size: 150%;
+	background-size: 100%;
 	background-repeat: no-repeat;
 	background-position: top;
 	overflow: overlay;
@@ -860,7 +867,8 @@ body:hover::-webkit-scrollbar-thumb {
 	min-height: 100vh;
 	display: flex;
 	text-align: center;
-	backdrop-filter: blur(30px);
+	/* backdrop-filter: blur(30px); */
+	backdrop-filter: blur(var(--cover-blurred));
 	overflow: hidden;
 }
 
@@ -1118,8 +1126,9 @@ body:hover::-webkit-scrollbar-thumb {
    */
 
 	body {
-		background-size: 40% 100%;
-		background-position: left center;
+		/* background-size: 40% 100%;
+		background-position: left center; */
+		background-position: center;
 	}
 
 	article {
@@ -1156,7 +1165,7 @@ body:hover::-webkit-scrollbar-thumb {
 		text-align: left;
 		flex-grow: 1;
 		align-items: center;
-		backdrop-filter: blur(100px);
+		/* backdrop-filter: blur(100px); */
 	}
 
 	.player .container {

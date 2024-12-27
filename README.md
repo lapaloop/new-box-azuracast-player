@@ -49,7 +49,7 @@ Edit configuration on the bottom of `index.html` files, and find
 
 ### Contact
 
-If you want to contact with me you can reach me at [Github](https://www.github,.com.com/PeWe79).
+If you want to contact with me you can reach me at [Github](https://www.github.com/PeWe79).
 
 ### License
 

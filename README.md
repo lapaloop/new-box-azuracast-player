@@ -27,14 +27,6 @@ Before you begin, ensure you have met the following requirements:
 
 To run **Radio Player** locally, run this command on your git bash:
 
-Linux and macOS:
-
-```bash
-git clone https://github.com/PeWe79/new-box-azuracast-player.git
-```
-
-Windows:
-
 ```bash
 git clone https://github.com/PeWe79/new-box-azuracast-player.git
 ```

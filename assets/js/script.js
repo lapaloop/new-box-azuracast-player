@@ -290,7 +290,7 @@ function processData() {
   const getCoverArt = async function (np) {
     const track = np.text;
     const resp = await fetch(
-      `https://itunes.apple.com/search?limit=1&term=${encodeURIComponent(
+      `https://itunes.apple.com/search?limit=1&media=music&term=${encodeURIComponent(
         track
       )}`
     );

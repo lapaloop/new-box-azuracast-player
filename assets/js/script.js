@@ -73,7 +73,6 @@ function processData() {
 
   /**
    * PLAYLIST MODAL SIDEBAR TOGGLE
-   *
    * show 'playlist' modal sidebar when click on playlist button in top app bar
    * and hide when click on overlay or any playlist-item
    */
@@ -117,11 +116,6 @@ function processData() {
    * change all visual information on player, based on current music
    */
 
-  // const playerBanner = document.querySelector("[data-player-banner]");
-  // const playerTitle = document.querySelector("[data-title]");
-  // const playerAlbum = document.querySelector("[data-album]");
-  // const playerArtist = document.querySelector("[data-artist]");
-
   const audioSource = new Audio(stationsData[currentMusic].streamUrl);
 
   const changePlayerInfo = function () {
@@ -134,7 +128,6 @@ function processData() {
 
   /**
    * PLAY MUSIC
-   *
    * play and pause music when click on play button
    */
 
@@ -196,7 +189,6 @@ function processData() {
 
   /**
    * HISTORY STATION
-   *
    * History button
    */
 
@@ -214,7 +206,6 @@ function processData() {
 
   /**
    * SHOW HISTORY
-   *
    * History song list
    */
 
@@ -342,7 +333,6 @@ function processData() {
         encodeURIComponent(artist + " - " + title);
       document.getElementById("spotify").href = stream;
 
-      // playerBanner.setAttribute("alt", `${n.title} Album Poster`);
       document.title = artist + " - " + title;
       document.getElementById("title").innerHTML = n.title;
       document.title = artist + " - " + title;
@@ -353,11 +343,6 @@ function processData() {
         .getElementById("artwork")
         .setAttribute("alt", `${n.title} Album Poster`);
       document.body.style.backgroundImage = `url(${n.art})`;
-
-      // playerBanner.src = n.art;
-      // playerArtist.textContent = n.artist;
-      // playerTitle.textContent = n.title;
-      // playerAlbum.textContent = n.album || "N/A";
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
